@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:22 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/16 17:41:45 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/18 18:45:01 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,16 @@ typedef struct s_data
     int time_to_sleep;
     int eat_number;
     int philo_number;
-    
+    int i;
+    pthread_mutex_t mutex;
 }   t_data;
+
+typedef struct s_philo
+{
+    pthread_t thread;
+    int id;
+    t_data *data;
+}   t_philo;
 
 int     ft_atoi(char *s);
 

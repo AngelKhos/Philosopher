@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:00 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/16 18:32:01 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/18 18:45:28 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ int init_data(t_data *data)
 	data->time_to_eat = 0;
 	data->time_to_sleep = 0;
 	data->eat_number = -1;
+	pthread_mutex_init(&data->mutex, NULL);
 	return (1);
 }
 
@@ -118,6 +119,43 @@ void print_data(t_data *data)
 	printf("time to eat: %d\n", data->time_to_eat);
 	printf("time to sleep: %d\n", data->time_to_sleep);
 	printf("number of eating action: %d\n", data->eat_number);
+	printf("i = %d\n", data->i);
+}
+
+void *routine(void *input)
+{
+	t_philo *philo;
+	int i = 0;
+
+	philo = input;
+	printf("philo id = %d, %p\n", philo->id, &philo->id);
+	pthread_mutex_lock(&philo->data->mutex);
+	while(i++ < 1000)
+		philo->data->i++;
+	pthread_mutex_unlock(&philo->data->mutex);
+	return (0);
+}
+
+void init_philo(t_data *data)
+{
+	t_philo *philo;
+	int i;
+
+	i = 0;
+	philo = malloc(sizeof(t_philo) * data->philo_number);
+	while (i < data->philo_number)
+	{
+		philo[i].id = i;
+		philo[i].data = data;
+		pthread_create(&philo[i].thread, NULL, routine, &philo[i]);
+		i++;
+	}
+	i = 0;
+	while (i < data->philo_number)
+	{
+		pthread_join(philo[i].thread, NULL);
+		i++;
+	}
 }
 
 int main(int ac, char **av)
@@ -129,6 +167,9 @@ int main(int ac, char **av)
 		return (1);
 	if (!parsing(ac, av, data))
 		return (1);
+	data->i = 0;
+	init_philo(data);
 	print_data(data);
+	free(data);
 	return (0);
 }
