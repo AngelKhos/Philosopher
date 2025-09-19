@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:00 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/18 18:45:28 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/19 19:43:52 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,53 +108,88 @@ int init_data(t_data *data)
 	data->time_to_eat = 0;
 	data->time_to_sleep = 0;
 	data->eat_number = -1;
-	pthread_mutex_init(&data->mutex, NULL);
+	data->flag = 0;
+	pthread_mutex_init(&data->flag_mutex, NULL);
 	return (1);
 }
 
 void print_data(t_data *data)
 {
+	t_philo *philo;
+	int i = 0;
+
+	philo = data->philos;
+	while (i < data->philo_number)
+	{
+		printf("data->philo[%d].id = %d\n",i , philo[i].id);
+		i++;
+	}
 	printf("number of philo: %d\n", data->philo_number);
 	printf("time to die: %d\n", data->time_to_death);
 	printf("time to eat: %d\n", data->time_to_eat);
 	printf("time to sleep: %d\n", data->time_to_sleep);
 	printf("number of eating action: %d\n", data->eat_number);
-	printf("i = %d\n", data->i);
 }
 
-void *routine(void *input)
+int malloc_philo(t_data *data)
 {
 	t_philo *philo;
-	int i = 0;
+	t_fork	*forks;
 
-	philo = input;
-	printf("philo id = %d, %p\n", philo->id, &philo->id);
-	pthread_mutex_lock(&philo->data->mutex);
-	while(i++ < 1000)
-		philo->data->i++;
-	pthread_mutex_unlock(&philo->data->mutex);
-	return (0);
+	forks = malloc(sizeof(t_fork) * data->philo_number);
+	if (!forks)
+		return (0);
+	philo = malloc(sizeof(t_philo) * data->philo_number);
+	if (!philo)
+	{
+		free(forks);
+		return (0);
+	}
+	data->philos = philo;
+	data->forks = forks;
+	return (1);
 }
 
-void init_philo(t_data *data)
+int init_philo(t_data *data)
 {
 	t_philo *philo;
+	t_fork	*forks;
 	int i;
 
 	i = 0;
-	philo = malloc(sizeof(t_philo) * data->philo_number);
+	philo = data->philos;
+	forks = data->forks;
 	while (i < data->philo_number)
 	{
-		philo[i].id = i;
+		pthread_mutex_init(&forks[i].mutex, NULL);
 		philo[i].data = data;
-		pthread_create(&philo[i].thread, NULL, routine, &philo[i]);
+		forks[i].bool = 0;
+		philo[i].id = i + 1;
+		philo[i].fork_right = &forks[(i + 1) % data->philo_number];
+		philo[i].fork_left = &forks[i];
 		i++;
 	}
+	return (1);
+}
+
+void launch_philo(t_data *data, t_philo *philo)
+{
+	int i;
+
 	i = 0;
-	while (i < data->philo_number)
+	pthread_mutex_lock(&data->flag_mutex);
+	while (i < data->philo_number && data->flag == 0)
 	{
-		pthread_join(philo[i].thread, NULL);
+		if (pthread_create(&philo[i].thread, NULL,
+			(void * (*)(void *))entry_point, &data->philos[i]))
+			data->flag = 1;
 		i++;
+	}
+	pthread_mutex_unlock(&data->flag_mutex);
+	while (i > 0)
+	{
+		i--;
+		pthread_join(philo[i].thread, NULL);
 	}
 }
 
@@ -167,9 +202,14 @@ int main(int ac, char **av)
 		return (1);
 	if (!parsing(ac, av, data))
 		return (1);
-	data->i = 0;
-	init_philo(data);
+	if (!malloc_philo(data))
+		return (1);
+	if (!init_philo(data))
+		return (1);
+	launch_philo(data, data->philos);
 	print_data(data);
+	free(data->philos);
+	free(data->forks);
 	free(data);
 	return (0);
 }

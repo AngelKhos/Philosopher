@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:22 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/18 18:45:01 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/19 19:19:46 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,38 @@
 # include <unistd.h>
 # include <stdio.h>
 
-typedef struct s_data
+typedef struct s_fork
+{
+    pthread_mutex_t mutex;
+    int bool;
+}   t_fork;
+
+typedef struct s_data   t_data;
+
+typedef struct s_philo
+{
+    int id;
+    pthread_t thread;
+    t_fork *fork_left;
+    t_fork *fork_right;
+    t_data *data;
+}   t_philo;
+
+struct s_data
 {
     int time_to_death;
     int time_to_eat;
     int time_to_sleep;
     int eat_number;
     int philo_number;
-    int i;
-    pthread_mutex_t mutex;
-}   t_data;
+    pthread_mutex_t flag_mutex;
+    int flag;
+    t_philo *philos;
+    t_fork *forks;
+};
 
-typedef struct s_philo
-{
-    pthread_t thread;
-    int id;
-    t_data *data;
-}   t_philo;
 
+void    *entry_point(t_philo *philo);
 int     ft_atoi(char *s);
 
 #endif
