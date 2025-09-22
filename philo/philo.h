@@ -71,7 +71,7 @@ int				init_philo(t_data *data);
 void			*entry_point(t_philo *philo);
 int				take_fork(t_fork *fork);
 void			drop_fork(t_fork *fork);
-void			print_state(t_philo *philo, char *s);
+void			print_state(t_philo *philo, char *s, int force);
 void			end_loop(t_data *data);
 
 /////////////////////// UTILS //////////////////////
@@ -79,5 +79,6 @@ void			end_loop(t_data *data);
 int				ft_atoi(char *s);
 unsigned int	time_diff(struct timeval t_1, struct timeval t_2);
 unsigned int	time_diff_now(struct timeval t);
+void    		ft_usleep(long int milisec);
 
 #endif

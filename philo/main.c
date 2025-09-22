@@ -86,25 +86,26 @@ void	check_philo(t_data *data)
 {
 	int i;
 	int finish;
-	int finish_eating;
 
 	i = 0;
-	finish_eating = 0;
 	while (data->flag != 1)
 	{
 		finish = 1;
 		i = 0;
-		usleep(10000);
-		while (i < data->philo_number && finish_eating == 0)
+		ft_usleep(1);
+		while (i < data->philo_number)
 		{
+
 			if (is_dead(&data->philos[i], data))
 			{
-				print_state(&data->philos[i], "has died");
-				finish_eating = 1;
-				end_loop(data);
+				pthread_mutex_lock(&data->flag_mutex);
+				data->flag = 1;
+				print_state(&data->philos[i], "died", 1);
+				pthread_mutex_unlock(&data->flag_mutex);
 				break ;
 			}
 			eat_check(data, &data->philos[i], &finish);
+			i++;
 		}
 		if (finish == 1)
 			end_loop(data);
@@ -149,6 +150,7 @@ int	main(int ac, char **av)
 	if (!init_philo(data))
 		return (1);
 	launch_philo(data, data->philos);
+	ft_usleep(data->time_to_death / 2);
 	check_philo(data);
 	// print_data(data);
 	kill_philo(data, data->philos, data->forks);

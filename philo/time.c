@@ -29,3 +29,23 @@ unsigned int time_diff_now(struct timeval t)
     res = (t_now.tv_sec - t.tv_sec) * 1000 + (t_now.tv_usec - t.tv_usec) / 1000;
     return (res);
 }
+
+long int    get_time(long int first_milisec)
+{
+    struct timeval    tv;
+
+    gettimeofday(&tv, NULL);
+    return ((tv.tv_sec * 1000 + tv.tv_usec / 1000 - first_milisec));
+}
+
+void    ft_usleep(long int milisec)
+{
+    long int    end_sleep;
+
+    end_sleep = get_time(0) + milisec;
+    while (get_time(0) < end_sleep)
+    {
+        usleep(500);
+    }
+}
+
