@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:33:32 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/19 19:58:57 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/22 12:39:16 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,11 @@ int	ft_atoi(char *s)
 		i++;
 	}
 	return (res * sign);
+}
+
+void	end_loop(t_data *data)
+{
+	pthread_mutex_lock(&data->flag_mutex);
+	data->flag = 1;
+	pthread_mutex_unlock(&data->flag_mutex);
 }

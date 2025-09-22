@@ -2,7 +2,7 @@ NAME=philo
 # /////////////////////////
 
 CC=cc
-CC_FLAGS=-Wall -Wextra -Werror -g -fsanitize=thread
+CC_FLAGS=-Wall -Wextra -Werror -g #-fsanitize=thread
 
 # /////////////////////////
 
@@ -11,7 +11,7 @@ DIR_DEPS=.deps
 
 # /////////////////////////
 
-SRCS= main.c utils.c philo.c
+SRCS= main.c utils.c philo.c parsing.c init.c fork_action.c time.c
 INCS= philo.h
 OBJS=$(SRCS:srcs/%.c=$(DIR_OBJS)/%.o)
 DEPS=$(SRCS:srcs/%.c=$(DIR_DEPS)/%.d)

@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:22 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/19 19:58:08 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/22 12:39:41 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,13 @@ typedef struct s_data	t_data;
 
 typedef struct s_philo
 {
-	int			id;
-	pthread_t	thread;
-	t_fork		*fork_left;
-	t_fork		*fork_right;
-	t_data		*data;
+	int				id;
+	int				eat_counter;
+	pthread_t		thread;
+	struct timeval	last_eat;
+	t_fork			*fork_left;
+	t_fork			*fork_right;
+	t_data			*data;
 }	t_philo;
 
 struct s_data
@@ -47,25 +49,35 @@ struct s_data
 	int				flag;
 	t_philo			*philos;
 	t_fork			*forks;
+	struct timeval	start_time;
 	pthread_mutex_t	flag_mutex;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t eat_check_mutex;
+	pthread_mutex_t	last_eat_mutex;
 };
 
 ////////////////////// PARSING /////////////////////
 
-int		parsing(int ac, char **av, t_data *data);
+int				parsing(int ac, char **av, t_data *data);
 
 /////////////////////// INIT ///////////////////////
 
-int		init_data(t_data *data);
-int		malloc_philo(t_data *data);
-int		init_philo(t_data *data);
+int				init_data(t_data *data);
+int				malloc_philo(t_data *data);
+int				init_philo(t_data *data);
 
 ////////////////////// ROUTINE /////////////////////
 
-void	*entry_point(t_philo *philo);
+void			*entry_point(t_philo *philo);
+int				take_fork(t_fork *fork);
+void			drop_fork(t_fork *fork);
+void			print_state(t_philo *philo, char *s);
+void			end_loop(t_data *data);
 
 /////////////////////// UTILS //////////////////////
 
-int		ft_atoi(char *s);
+int				ft_atoi(char *s);
+unsigned int	time_diff(struct timeval t_1, struct timeval t_2);
+unsigned int	time_diff_now(struct timeval t);
 
 #endif
