@@ -54,7 +54,7 @@ void	launch_philo(t_data *data, t_philo *philo)
 			data->flag = 1;
 		i++;
 	}
-	usleep(80000);
+	ft_usleep(3000);
 	gettimeofday(&data->start_time, NULL);
 	pthread_mutex_unlock(&data->flag_mutex);
 }
@@ -95,12 +95,11 @@ void	check_philo(t_data *data)
 		usleep(5000);
 		while (i < data->philo_number)
 		{
-
 			if (is_dead(&data->philos[i], data))
 			{
-				pthread_mutex_lock(&data->flag_mutex);
-				data->flag = 1;
+				pthread_mutex_lock(&data->flag_mutex);	
 				print_state(&data->philos[i], "died", 1);
+				data->flag = 1;
 				pthread_mutex_unlock(&data->flag_mutex);
 				break ;
 			}

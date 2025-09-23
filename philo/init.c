@@ -64,8 +64,12 @@ int	init_philo(t_data *data)
 		philo[i].eat_counter = data->eat_number;
 		forks[i].bool = 0;
 		philo[i].id = i + 1;
-		philo[i].fork_right = &forks[(i + 1) % data->philo_number];
-		philo[i].fork_left = &forks[i];
+		philo[i].fork_left = &forks[(i + 1) % data->philo_number];
+		philo[i].fork_right = &forks[i];
+		if (philo[i].id % 2)
+			philo[i].fork_right = &forks[(i + 1) % data->philo_number];
+		if (philo[i].id % 2)
+			philo[i].fork_left = &forks[i];
 		i++;
 	}
 	return (1);

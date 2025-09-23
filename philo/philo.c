@@ -26,23 +26,17 @@ int		get_flag(t_data *data)
 
 void	print_state(t_philo *philo, char *s, int force)
 {
-	if (!force)
-		if (!get_flag(philo->data))
-			return ;
-	pthread_mutex_lock(&philo->data->print_mutex);
-	printf("%u %d %s\n", time_diff_now(philo->data->start_time), philo->id, s);
-	pthread_mutex_unlock(&philo->data->print_mutex);
+	if (force == 0)
+		pthread_mutex_lock(&philo->data->flag_mutex);
+	if (philo->data->flag == 0)
+	{
+		pthread_mutex_lock(&philo->data->print_mutex);
+		printf("%u %d %s\n", time_diff_now(philo->data->start_time), philo->id, s);
+		pthread_mutex_unlock(&philo->data->print_mutex);
+	}
+	if (force == 0)
+		pthread_mutex_unlock(&philo->data->flag_mutex);
 }
-
-// void	thinking_state_even(t_philo *philo)
-// {
-// 	while (take_fork(philo->fork_right) == 0 && get_flag(philo->data))
-// 		usleep(100);
-// 	print_state(philo, "has taken a fork", 0);
-// 	while (take_fork(philo->fork_left) == 0 && get_flag(philo->data))
-// 		usleep(100);
-// 	print_state(philo, "has taken a fork", 0);
-// }
 
 void	thinking_state(t_philo *philo)
 {
@@ -56,7 +50,6 @@ void	thinking_state(t_philo *philo)
 
 void	routine(t_philo *philo)
 {
-	
 	thinking_state(philo);
 	print_state(philo, "is eating", 0);
 	pthread_mutex_lock(&philo->data->last_eat_mutex);
