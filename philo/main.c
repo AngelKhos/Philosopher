@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:00 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/22 13:17:42 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 14:13:41 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	check_philo(t_data *data)
 	{
 		finish = 1;
 		i = 0;
-		ft_usleep(1);
+		usleep(5000);
 		while (i < data->philo_number)
 		{
 

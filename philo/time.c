@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 15:28:25 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/21 16:27:50 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 14:11:02 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void    ft_usleep(long int milisec)
     end_sleep = get_time(0) + milisec;
     while (get_time(0) < end_sleep)
     {
-        usleep(500);
+        usleep(333);
     }
 }
 

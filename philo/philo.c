@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 18:57:39 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/22 13:34:14 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 14:01:23 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	print_state(t_philo *philo, char *s, int force)
 
 void	thinking_state(t_philo *philo)
 {
-	while (get_flag(philo->data) && take_fork(philo->fork_left) == 0)
-		ft_usleep(1);
+	while (take_fork(philo->fork_left) == 0)
+		usleep(100);
 	print_state(philo, "has taken a fork", 0);
-	while (get_flag(philo->data) && take_fork(philo->fork_right) == 0)
-		ft_usleep(1);
+	while (take_fork(philo->fork_right) == 0)
+		usleep(100);
 	print_state(philo, "has taken a fork", 0);
 }	
 
