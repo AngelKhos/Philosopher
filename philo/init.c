@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 19:48:54 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/22 13:15:21 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 17:00:31 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ int	init_philo(t_data *data)
 		philo[i].id = i + 1;
 		philo[i].fork_left = &forks[(i + 1) % data->philo_number];
 		philo[i].fork_right = &forks[i];
-		if (philo[i].id % 2)
+		if (philo[i].id % 2 == 0)
 			philo[i].fork_right = &forks[(i + 1) % data->philo_number];
-		if (philo[i].id % 2)
+		if (philo[i].id % 2 == 0)
 			philo[i].fork_left = &forks[i];
 		i++;
 	}

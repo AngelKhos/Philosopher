@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:00 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/23 14:13:41 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 16:57:50 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	launch_philo(t_data *data, t_philo *philo)
 			data->flag = 1;
 		i++;
 	}
-	ft_usleep(3000);
+	usleep(80000);
 	gettimeofday(&data->start_time, NULL);
 	pthread_mutex_unlock(&data->flag_mutex);
 }
@@ -92,7 +92,7 @@ void	check_philo(t_data *data)
 	{
 		finish = 1;
 		i = 0;
-		usleep(5000);
+		ft_usleep(1);
 		while (i < data->philo_number)
 		{
 			if (is_dead(&data->philos[i], data))

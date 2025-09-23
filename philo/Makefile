@@ -2,7 +2,7 @@ NAME=philo
 # /////////////////////////
 
 CC=cc
-CC_FLAGS=-Wall -Wextra -Werror -g -fsanitize=thread
+CC_FLAGS=-Wall -Wextra -Werror -g #-fsanitize=thread
 
 # /////////////////////////
 
