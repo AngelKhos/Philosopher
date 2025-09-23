@@ -37,6 +37,9 @@ void	ft_usleep(long int milisec)
 	end_sleep = get_time(0) + milisec * 1000;
 	while (get_time(0) < end_sleep)
 	{
-		usleep((end_sleep - get_time(0)) / 2);
+		if (end_sleep - get_time(0) > 2000)
+			usleep((end_sleep - get_time(0)) / 2);
+		else
+			usleep((end_sleep - get_time(0)));
 	}
 }
