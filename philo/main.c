@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:00 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/23 16:57:50 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 18:51:48 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,7 @@
 // they sit in circle
 // if a philo dies, the message should appear less than 10 ms after
 
-void	print_data(t_data *data)
-{
-	t_philo	*philo;
-	int		i;
-
-	i = 0;
-	philo = data->philos;
-	while (i < data->philo_number)
-	{
-		printf("data->philo[%d].id = %d\n", i, philo[i].id);
-		i++;
-	}
-	printf("number of philo: %d\n", data->philo_number);
-	printf("time to die: %d\n", data->time_to_death);
-	printf("time to eat: %d\n", data->time_to_eat);
-	printf("time to sleep: %d\n", data->time_to_sleep);
-	printf("number of eating action: %d\n", data->eat_number);
-}
-
-void	launch_philo(t_data *data, t_philo *philo)
+int	launch_philo(t_data *data, t_philo *philo)
 {
 	int	i;
 
@@ -57,19 +38,20 @@ void	launch_philo(t_data *data, t_philo *philo)
 	usleep(80000);
 	gettimeofday(&data->start_time, NULL);
 	pthread_mutex_unlock(&data->flag_mutex);
+	return (i);
 }
 
 int	is_dead(t_philo *philo, t_data *data)
 {
-	struct timeval t;
-	unsigned int res;
+	struct timeval	t;
+	unsigned int	res;
 
 	gettimeofday(&t, NULL);
 	pthread_mutex_lock(&data->last_eat_mutex);
-    res = (t.tv_sec - philo->last_eat.tv_sec) * 1000 +
-		(t.tv_usec - philo->last_eat.tv_usec) / 1000;
+	res = (t.tv_sec - philo->last_eat.tv_sec) * 1000000
+		+ (t.tv_usec - philo->last_eat.tv_usec);
 	pthread_mutex_unlock(&data->last_eat_mutex);
-	if ((int)res > data->time_to_death)
+	if ((int)res / 1000 > data->time_to_death)
 		return (1);
 	return (0);
 }
@@ -84,20 +66,19 @@ void	eat_check(t_data *data, t_philo *philo, int *finish)
 
 void	check_philo(t_data *data)
 {
-	int i;
-	int finish;
+	int	i;
+	int	finish;
 
 	i = 0;
 	while (data->flag != 1)
 	{
 		finish = 1;
 		i = 0;
-		ft_usleep(1);
 		while (i < data->philo_number)
 		{
 			if (is_dead(&data->philos[i], data))
 			{
-				pthread_mutex_lock(&data->flag_mutex);	
+				pthread_mutex_lock(&data->flag_mutex);
 				print_state(&data->philos[i], "died", 1);
 				data->flag = 1;
 				pthread_mutex_unlock(&data->flag_mutex);
@@ -108,36 +89,14 @@ void	check_philo(t_data *data)
 		}
 		if (finish == 1)
 			end_loop(data);
+		usleep(10);
 	}
-}
-
-
-void kill_philo(t_data *data, t_philo *philos, t_fork *forks)
-{
-	int i;
-
-	i = 0;
-	while (i < data->philo_number)
-	{
-		pthread_join(philos[i].thread, NULL);
-		i++;
-	}
-	while (i)
-	{
-		i--;
-		pthread_mutex_destroy(&forks[i].mutex);
-	}
-	pthread_mutex_destroy(&data->eat_check_mutex);
-	pthread_mutex_destroy(&data->flag_mutex);
-	pthread_mutex_destroy(&data->last_eat_mutex);
-	pthread_mutex_destroy(&data->print_mutex);
-	free(philos);
-	free(forks);
 }
 
 int	main(int ac, char **av)
 {
 	t_data	*data;
+	int		philo_launched;
 
 	data = malloc(sizeof(t_data));
 	if (!init_data(data))
@@ -148,11 +107,13 @@ int	main(int ac, char **av)
 		return (1);
 	if (!init_philo(data))
 		return (1);
-	launch_philo(data, data->philos);
-	ft_usleep(data->time_to_death / 2);
-	check_philo(data);
-	// print_data(data);
-	kill_philo(data, data->philos, data->forks);
+	philo_launched = launch_philo(data, data->philos);
+	if (philo_launched == data->philo_number)
+	{
+		ft_usleep(data->time_to_death / 2);
+		check_philo(data);
+	}
+	kill_philo(data, data->philos, data->forks, philo_launched);
 	free(data);
 	return (0);
 }

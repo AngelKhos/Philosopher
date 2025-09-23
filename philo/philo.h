@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:22 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/22 12:39:41 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/23 18:53:31 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ struct s_data
 	struct timeval	start_time;
 	pthread_mutex_t	flag_mutex;
 	pthread_mutex_t	print_mutex;
-	pthread_mutex_t eat_check_mutex;
+	pthread_mutex_t	eat_check_mutex;
 	pthread_mutex_t	last_eat_mutex;
 };
 
@@ -77,8 +77,9 @@ void			end_loop(t_data *data);
 /////////////////////// UTILS //////////////////////
 
 int				ft_atoi(char *s);
-unsigned int	time_diff(struct timeval t_1, struct timeval t_2);
 unsigned int	time_diff_now(struct timeval t);
-void    		ft_usleep(long int milisec);
+void			ft_usleep(long int milisec);
+void			kill_philo(t_data *data, t_philo *philos,
+					t_fork *forks, int philo_launched);
 
 #endif
