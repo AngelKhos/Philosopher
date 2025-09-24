@@ -15,8 +15,8 @@
 int	ft_atoi(char *s)
 {
 	int	i;
-	int	res;
-	int	sign;
+	long int	res;
+	long int	sign;
 
 	res = 0;
 	i = 0;
@@ -32,9 +32,11 @@ int	ft_atoi(char *s)
 	while (s[i] >= '0' && s[i] <= '9')
 	{
 		res = res * 10 + (s[i] - '0');
+		if (res > 2147483647)
+			return (0);
 		i++;
 	}
-	return (res * sign);
+	return ((int)(res * sign));
 }
 
 void	end_loop(t_data *data)
