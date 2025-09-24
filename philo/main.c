@@ -6,7 +6,7 @@
 /*   By: authomas <authomas@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:02:00 by authomas          #+#    #+#             */
-/*   Updated: 2025/09/23 18:51:48 by authomas         ###   ########lyon.fr   */
+/*   Updated: 2025/09/24 15:56:04 by authomas         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ int	launch_philo(t_data *data, t_philo *philo)
 	{
 		if (pthread_create(&philo[i].thread, NULL,
 				(void *(*)(void *))entry_point, &data->philos[i]))
+		{
 			data->flag = 1;
+			break ;
+		}
 		i++;
 	}
 	usleep(80000);
@@ -104,7 +107,10 @@ int	main(int ac, char **av)
 	if (!parsing(ac, av, data))
 		return (1);
 	if (!malloc_philo(data))
+	{
+		free(data);
 		return (1);
+	}
 	if (!init_philo(data))
 		return (1);
 	philo_launched = launch_philo(data, data->philos);
