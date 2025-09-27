@@ -33,6 +33,7 @@ int	launch_philo(t_data *data, t_philo *philo)
 		if (pthread_create(&philo[i].thread, NULL,
 				(void *(*)(void *))entry_point, &data->philos[i]))
 		{
+			printf("Error: pthread_create broke :(\n");
 			data->flag = 1;
 			break ;
 		}
